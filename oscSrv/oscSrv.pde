@@ -37,16 +37,23 @@ void draw() {
 void oscEvent(OscMessage theOscMessage) {
   /* check if the address pattern fits any of our patterns */
   if (theOscMessage.addrPattern().equals(myConnectPattern)) {
-    connect(theOscMessage.netAddress().address());
+    // modificar connect para conectar (address, port)
+    // port se conseguiria via el mensaje de conexion
+        
+    connect(theOscMessage.netAddress().address(), myBroadcastPort);
+
   }
   else if (theOscMessage.addrPattern().equals(myDisconnectPattern)) {
-    disconnect(theOscMessage.netAddress().address());
+    disconnect(theOscMessage.netAddress().address(), myBroadcastPort);
   }
   /**
    * if pattern matching was not successful, then broadcast the incoming
    * message to all addresses in the netAddresList. 
    */
   else {
+    
+    // Esta no me interesa denmasiado
+    
     oscP5.send(theOscMessage, myNetAddressList);
   }
 }
@@ -62,6 +69,16 @@ void oscEvent(OscMessage theOscMessage) {
      println("### currently there are "+myNetAddressList.list().size()+" remote locations connected.");
  }
 
+ private void connect(String theIPaddress, int portCli) {
+     if (!myNetAddressList.contains(theIPaddress, portCli)) {
+       myNetAddressList.add(new NetAddress(theIPaddress, portCli));
+       println("### adding "+theIPaddress+":"+portCli+" to the list.");
+     } else {
+       println("### "+theIPaddress+":"+portCli+" is already connected.");
+     }
+     println("### currently there are "+myNetAddressList.list().size()+" remote locations connected.");
+ }
+
 
 
 private void disconnect(String theIPaddress) {
@@ -73,3 +90,13 @@ if (myNetAddressList.contains(theIPaddress, myBroadcastPort)) {
      }
        println("### currently there are "+myNetAddressList.list().size());
  }
+ 
+private void disconnect(String theIPaddress, int portCli) {
+  if (myNetAddressList.contains(theIPaddress, portCli)) {
+    myNetAddressList.remove(theIPaddress, portCli);
+       println("### removing "+theIPaddress+":"+portCli+" from the list.");
+     } else {
+       println("### "+theIPaddress+":"+portCli+" is not connected.");
+     }
+  println("### currently there are "+myNetAddressList.list().size());
+}

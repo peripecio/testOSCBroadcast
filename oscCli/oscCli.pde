@@ -18,7 +18,8 @@ NetAddress myBroadcastLocation;
 String myConnectPattern = "/server/connect";
 String myDisconnectPattern = "/server/disconnect";
 
-
+int myListeningPort = 12000;
+int myBroadcastPort = 32000;
 
 
 void setup() {
@@ -28,14 +29,14 @@ void setup() {
   /* create a new instance of oscP5. 
    * 12000 is the port number you are listening for incoming osc messages.
    */
-  oscP5 = new OscP5(this,12000);
+  oscP5 = new OscP5(this,myListeningPort);
   
   /* create a new NetAddress. a NetAddress is used when sending osc messages
    * with the oscP5.send method.
    */
   
   /* the address of the osc broadcast server */
-  myBroadcastLocation = new NetAddress("127.0.0.1",32000);
+  myBroadcastLocation = new NetAddress("127.0.0.1",myBroadcastPort);
 }
 
 
