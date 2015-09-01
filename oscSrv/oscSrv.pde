@@ -7,6 +7,14 @@
  * all connected clients. 
  * an example for a client is located in the oscP5broadcastClient exmaple.
  * oscP5 website at http://www.sojamo.de/oscP5
+ 
+ *
+ * Modificación Guillermo casado - sept 2015
+ * The server stores IP and ports of connected clients, 
+ * so each cli can have a diferent listening port, 
+ * and a unique computer several diferent clients.  
+ *
+ 
  */
  
 import oscP5.*;
@@ -22,26 +30,45 @@ int myBroadcastPort = 12000;
 String myConnectPattern = "/server/connect";
 String myDisconnectPattern = "/server/disconnect";
 
+PFont font;
 
 void setup() {
+  size(300,400);
   oscP5 = new OscP5(this, myListeningPort);
   frameRate(25);
+  
+  font = createFont("Courier New", 14, true);
+  
 }
 
 void draw() {
   background(0);
   
-  text(myNetAddressList.size(),10,20);
+  int yLin = 25;
+  int hLin = 15; 
+  textFont(font);
+  text("OSC Broadcast Server", 10, yLin); yLin += hLin;
+  text("# clis: " + myNetAddressList.size(),10,yLin); yLin += hLin;
+  for(int i=0; i<myNetAddressList.size(); i++) {
+    NetAddress cli = (NetAddress) myNetAddressList.get(i);
+    text(" · "+cli.address()+":"+cli.port(), 10, yLin); yLin += hLin;
+    
+  }
+  
+  
 }
 
 void oscEvent(OscMessage theOscMessage) {
   /* check if the address pattern fits any of our patterns */
   if (theOscMessage.addrPattern().equals(myConnectPattern)) {
     // modificar connect para conectar (address, port)
-    // port se conseguiria via el mensaje de conexion
-        
+    // port se consegue en el mensaje de conexion, en la posición 0
+    // porque el puerto que viene en netAddress es uno temporal.
+    int pCli = theOscMessage.get(0).intValue();
+    
 //    connect(theOscMessage.netAddress().address(), myBroadcastPort);
-    connect(theOscMessage.netAddress().address(), theOscMessage.netAddress().port());
+//    connect(theOscMessage.netAddress().address(), theOscMessage.netAddress().port());
+    connect(theOscMessage.netAddress().address(), pCli);
 
   }
   else if (theOscMessage.addrPattern().equals(myDisconnectPattern)) {
@@ -54,7 +81,7 @@ void oscEvent(OscMessage theOscMessage) {
    */
   else {
     
-    // Esta no me interesa denmasiado
+    // Esta no me interesa demasiado
     
     oscP5.send(theOscMessage, myNetAddressList);
   }
