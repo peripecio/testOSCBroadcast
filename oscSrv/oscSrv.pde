@@ -48,6 +48,9 @@ void draw() {
   int hLin = 15; 
   textFont(font);
   text("OSC Broadcast Server", 10, yLin); yLin += hLin;
+  text("====================", 10, yLin); yLin += hLin;
+  text(">>>> d borrar CLIs", 10, yLin); yLin += hLin;
+  
   text("# clis: " + myNetAddressList.size(),10,yLin); yLin += hLin;
   for(int i=0; i<myNetAddressList.size(); i++) {
     NetAddress cli = (NetAddress) myNetAddressList.get(i);
@@ -57,6 +60,21 @@ void draw() {
   
   
 }
+
+void keyPressed() {
+  
+  if(key=='d') {
+//    for(int i=myNetAddressList.size()-1; i==0; i--) {
+//      myNetAddressList.remove(myNetAddressList.get(i));
+//    }
+    while(myNetAddressList.size()>0) {
+      myNetAddressList.remove(myNetAddressList.get(0));
+    }
+  }
+  
+}
+
+
 
 void oscEvent(OscMessage theOscMessage) {
   /* check if the address pattern fits any of our patterns */
@@ -111,31 +129,4 @@ private void disconnect(String theIPaddress, int portCli) {
   println("### currently there are "+myNetAddressList.list().size());
 }
 
-
-//
-//
-//
-// OLD
-//
-
-private void connect(String theIPaddress) {
-     if (!myNetAddressList.contains(theIPaddress, myBroadcastPort)) {
-       myNetAddressList.add(new NetAddress(theIPaddress, myBroadcastPort));
-       println("### adding "+theIPaddress+" to the list.");
-     } else {
-       println("### "+theIPaddress+" is already connected.");
-     }
-     println("### currently there are "+myNetAddressList.list().size()+" remote locations connected.");
- }
-
-private void disconnect(String theIPaddress) {
-if (myNetAddressList.contains(theIPaddress, myBroadcastPort)) {
-    myNetAddressList.remove(theIPaddress, myBroadcastPort);
-       println("### removing "+theIPaddress+" from the list.");
-     } else {
-       println("### "+theIPaddress+" is not connected.");
-     }
-       println("### currently there are "+myNetAddressList.list().size());
- }
- 
 

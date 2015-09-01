@@ -25,17 +25,19 @@ OscP5 oscP5;
 NetAddress myBroadcastLocation; 
 
 String nombreCli = "cli1";
-int nDataCli = 101;
+int nDataCli = 200;
 
 String myConnectPattern = "/server/connect";
 String myDisconnectPattern = "/server/disconnect";
 
-int myListeningPort = 12000;
+int myListeningPort =  12000+nDataCli+1;;
 int myBroadcastPort = 32000;
 
 PFont font;
 
 ArrayList<String> lastMessages;
+
+color cBckgnd;
 
 void setup() {
   size(300,300);
@@ -56,12 +58,18 @@ void setup() {
   lastMessages = new ArrayList();  
   
   font = createFont("Courier New", 14, true);
+
+  // color fondo
+  colorMode(HSB, 100);
+  cBckgnd = color(random(100), 80, 40);
+  colorMode(RGB,255);
   
 }
 
 
 void draw() {
-  background(0,0,160);
+//  background(0,0,160);
+  background(cBckgnd);
 
   fill(255);
     
@@ -71,9 +79,13 @@ void draw() {
   text("OSC Broadcast Client", 10, yLin); yLin += hLin;
   text("c:connect; d:disconn", 10, yLin); yLin += hLin;
   text("====================", 10, yLin); yLin += hLin;
+  text(">>> "+nombreCli, 10, yLin); yLin += hLin;
 
-  for(int i=0; i<lastMessages.size() || yLin>height; i++) {
-    text((String)lastMessages.get(i), 10, yLin); yLin += hLin;
+  for(int i=lastMessages.size()-1; i>=0; i--) {
+    if(hLin<height) {
+      text((String)lastMessages.get(i), 10, yLin); yLin += hLin;
+    }
+    else break;
   }
   
 }
