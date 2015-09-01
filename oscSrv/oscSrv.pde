@@ -40,11 +40,13 @@ void oscEvent(OscMessage theOscMessage) {
     // modificar connect para conectar (address, port)
     // port se conseguiria via el mensaje de conexion
         
-    connect(theOscMessage.netAddress().address(), myBroadcastPort);
+//    connect(theOscMessage.netAddress().address(), myBroadcastPort);
+    connect(theOscMessage.netAddress().address(), theOscMessage.netAddress().port());
 
   }
   else if (theOscMessage.addrPattern().equals(myDisconnectPattern)) {
-    disconnect(theOscMessage.netAddress().address(), myBroadcastPort);
+//    disconnect(theOscMessage.netAddress().address(), myBroadcastPort);
+    disconnect(theOscMessage.netAddress().address(), theOscMessage.netAddress().port());
   }
   /**
    * if pattern matching was not successful, then broadcast the incoming
@@ -59,15 +61,6 @@ void oscEvent(OscMessage theOscMessage) {
 }
 
 
- private void connect(String theIPaddress) {
-     if (!myNetAddressList.contains(theIPaddress, myBroadcastPort)) {
-       myNetAddressList.add(new NetAddress(theIPaddress, myBroadcastPort));
-       println("### adding "+theIPaddress+" to the list.");
-     } else {
-       println("### "+theIPaddress+" is already connected.");
-     }
-     println("### currently there are "+myNetAddressList.list().size()+" remote locations connected.");
- }
 
  private void connect(String theIPaddress, int portCli) {
      if (!myNetAddressList.contains(theIPaddress, portCli)) {
@@ -81,16 +74,6 @@ void oscEvent(OscMessage theOscMessage) {
 
 
 
-private void disconnect(String theIPaddress) {
-if (myNetAddressList.contains(theIPaddress, myBroadcastPort)) {
-		myNetAddressList.remove(theIPaddress, myBroadcastPort);
-       println("### removing "+theIPaddress+" from the list.");
-     } else {
-       println("### "+theIPaddress+" is not connected.");
-     }
-       println("### currently there are "+myNetAddressList.list().size());
- }
- 
 private void disconnect(String theIPaddress, int portCli) {
   if (myNetAddressList.contains(theIPaddress, portCli)) {
     myNetAddressList.remove(theIPaddress, portCli);
@@ -100,3 +83,32 @@ private void disconnect(String theIPaddress, int portCli) {
      }
   println("### currently there are "+myNetAddressList.list().size());
 }
+
+
+//
+//
+//
+// OLD
+//
+
+private void connect(String theIPaddress) {
+     if (!myNetAddressList.contains(theIPaddress, myBroadcastPort)) {
+       myNetAddressList.add(new NetAddress(theIPaddress, myBroadcastPort));
+       println("### adding "+theIPaddress+" to the list.");
+     } else {
+       println("### "+theIPaddress+" is already connected.");
+     }
+     println("### currently there are "+myNetAddressList.list().size()+" remote locations connected.");
+ }
+
+private void disconnect(String theIPaddress) {
+if (myNetAddressList.contains(theIPaddress, myBroadcastPort)) {
+    myNetAddressList.remove(theIPaddress, myBroadcastPort);
+       println("### removing "+theIPaddress+" from the list.");
+     } else {
+       println("### "+theIPaddress+" is not connected.");
+     }
+       println("### currently there are "+myNetAddressList.list().size());
+ }
+ 
+
